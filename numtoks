@@ -1,0 +1,32 @@
+#!/usr/bin/env python
+
+'''
+numtoks counts the tokens in its input (or, alternatively, in a given file)
+using a tokenizer from the HuggingFace Transformers library. You can pass
+in a specific tokenizer model name.
+'''
+
+import argparse
+import sys
+
+from transformers import AutoTokenizer
+
+parser = argparse.ArgumentParser(description='Count tokens in text for various language models')
+parser.add_argument('--model', default='distilgpt2', help='the name of the model to tokenize for')
+parser.add_argument('--file', help='the name of the model to tokenize for')
+args = parser.parse_args()
+
+try:
+	tokenizer = AutoTokenizer.from_pretrained(args.model)
+	txt = None
+	if args.file:
+		with open(args.file, 'r') as f:
+			txt = f.read()
+	else:
+		txt = sys.stdin.read()
+
+	num_toks = len(tokenizer(txt).input_ids)
+
+	print(num_toks)
+except KeyboardInterrupt:
+	print('')
